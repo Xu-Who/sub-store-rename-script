@@ -188,14 +188,10 @@ function operator(pro) {
             BLKEY_REPLACE = i.split(">")[1];
             re = true;
           }
-        } else {
-          if (ens.includes(i)) {
-             e.name += " " + i
-            }
         }
         retainKey = re
         ? BLKEY_REPLACE
-        : BLKEYS.filter((items) => e.name.includes(items));
+        : BLKEYS.filter((items) => ens.includes(items));
       });}
       }
     });
@@ -231,6 +227,8 @@ function operator(pro) {
       regexArray.forEach((regex, index) => {
         if (regex.test(e.name)) {
           ikeys = valueArray[index];
+          // 从节点名称中移除匹配到的关键词，避免重复
+          e.name = e.name.replace(regex, ' ').trim();
         }
       });
     }
