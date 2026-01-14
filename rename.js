@@ -237,14 +237,14 @@ function operator(pro) {
 
     // 正则 匹配倍率
     if (bl) {
-      const match = e.name.match(
-        /((倍率|X|x|×)\D?((\d{1,3}\.)\d+)\D?)|((\d{1,3}\.)\d+)(倍|X|x|×)/
-      );
+      const multiplierRegex = /(?:\[|\s)((\d+(?:\.\d+)?)[x×倍])(?:\]|\s)|(?:\[|\s)([x×倍](\d+(?:\.\d+)?))(?:\]|\s)/i;
+      const match = e.name.match(multiplierRegex);
       if (match) {
-        const rev = match[0].match(/(\d[\d.]*)/)[0];
-        if (rev !== "1") {
-          const newValue = "*" + rev;
-          ikey = newValue;
+        const fullMatch = match[0];
+        const rev = match[2] || match[4];
+        if (rev && rev !== "1") {
+          e.multiplier = "*" + rev; // Store it
+          e.name = e.name.replace(fullMatch, ' ').trim(); // Remove it
         }
       }
     }
@@ -275,7 +275,7 @@ function operator(pro) {
         }
       }
       keyover = keyover
-        .concat(firstName, usflag, nNames, findKeyValue, retainKey, ikeys, ikey)
+        .concat(firstName, usflag, nNames, findKeyValue, retainKey, ikeys)
         .filter((k) => k !== "");
       e.name = keyover.join(FGF);
     } else {
@@ -291,6 +291,11 @@ function operator(pro) {
   numone && oneP(pro);
   blpx && (pro = fampx(pro));
   key && (pro = pro.filter((e) => !keyb.test(e.name)));
+  pro.forEach(e => {
+    if (e.multiplier) {
+      e.name = e.name + FGF + e.multiplier;
+    }
+  });
   return pro;
 }
 
