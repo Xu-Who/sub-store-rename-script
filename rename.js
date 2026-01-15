@@ -226,7 +226,13 @@ function operator(pro) {
     if (blgd) {
       regexArray.forEach((regex, index) => {
         if (regex.test(e.name)) {
-          ikeys = valueArray[index];
+          const value = valueArray[index];
+          // 如果是倍率格式（*开头），存储到multiplier，否则存储到ikeys
+          if (value.startsWith('*')) {
+            e.multiplier = value;
+          } else {
+            ikeys = value;
+          }
           // 从节点名称中移除匹配到的关键词，避免重复
           e.name = e.name.replace(regex, ' ').trim();
         }
