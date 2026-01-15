@@ -241,11 +241,12 @@ function operator(pro) {
 
     // 正则 匹配倍率
     if (bl) {
-      const multiplierRegex = /(?:\[|\s)((\d+(?:\.\d+)?)[x×倍])(?:\]|\s)|(?:\[|\s)([x×倍](\d+(?:\.\d+)?))(?:\]|\s)/i;
+      // 匹配格式：x5, 5x, 5倍, 0.5x, [x5], |x5 等
+      const multiplierRegex = /[|\[\s]?((\d+(?:\.\d+)?)[x×倍]|[x×倍](\d+(?:\.\d+)?))[|\]\s]?/i;
       const match = e.name.match(multiplierRegex);
       if (match) {
         const fullMatch = match[0];
-        const rev = match[2] || match[4];
+        const rev = match[2] || match[3];
         if (rev && rev !== "1") {
           e.multiplier = "*" + rev; // Store it
           e.name = e.name.replace(fullMatch, ' ').trim(); // Remove it
